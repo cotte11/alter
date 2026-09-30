@@ -42,3 +42,6 @@ next-env.d.ts
 
 # assets fuente (Cinema 4D, Illustrator, Photoshop, GLB sin optimizar)
 /assets-source/
+
+# archivos de referencia pesados (moodboards, >100 MB: GitHub los rechaza)
+/moodboards*.pdf

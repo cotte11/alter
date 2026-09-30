@@ -1,5 +1,5 @@
-import { useMemo, type Ref } from "react";
-import { LatheGeometry, TorusGeometry, CylinderGeometry, Vector2, type MeshStandardMaterial } from "three";
+import { useMemo, type ReactNode } from "react";
+import { LatheGeometry, TorusGeometry, CylinderGeometry, Vector2 } from "three";
 import { AluminiumMaterial } from "../materials";
 
 /**
@@ -9,7 +9,13 @@ import { AluminiumMaterial } from "../materials";
  */
 export const CAN_TOP_Y = 0.985; // altura de la tapa (donde está el remache)
 
-export function CanPlaceholderModel({ bodyMaterialRef }: { bodyMaterialRef: Ref<MeshStandardMaterial> }) {
+interface Props {
+  bodyMaterial: ReactNode;
+  /** Malla extra, levemente más grande, para el crossfade de etiqueta (ver Can.tsx). */
+  bodyOverlayMaterial?: ReactNode;
+}
+
+export function CanPlaceholderModel({ bodyMaterial, bodyOverlayMaterial }: Props) {
   const { body, tab, ring } = useMemo(() => {
     const R = 0.39;
     const profile = [
@@ -34,8 +40,13 @@ export function CanPlaceholderModel({ bodyMaterialRef }: { bodyMaterialRef: Ref<
   return (
     <>
       <mesh name="body" geometry={body}>
-        <AluminiumMaterial ref={bodyMaterialRef} />
+        {bodyMaterial}
       </mesh>
+      {bodyOverlayMaterial && (
+        <mesh geometry={body} scale={1.004}>
+          {bodyOverlayMaterial}
+        </mesh>
+      )}
       <mesh name="tab" geometry={tab} position={[0, CAN_TOP_Y, 0]}>
         <AluminiumMaterial />
       </mesh>

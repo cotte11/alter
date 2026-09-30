@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Environment, Lightformer } from "@react-three/drei";
 import { Bloom, EffectComposer, ToneMapping } from "@react-three/postprocessing";
 import type { QualitySettings } from "@/config/quality";
@@ -9,7 +10,7 @@ import { LineUp } from "./products/LineUp";
 export function Scene({ quality, reducedMotion }: { quality: QualitySettings; reducedMotion: boolean }) {
   return (
     <>
-      <color attach="background" args={["#0b0b10"]} />
+      {/* Sin fondo propio: el color y la frase del hero viven en <BackLayer> (detrás del Canvas). */}
       <ambientLight intensity={0.25} />
       <directionalLight position={[3, 4, 5]} intensity={1.2} />
 
@@ -21,8 +22,11 @@ export function Scene({ quality, reducedMotion }: { quality: QualitySettings; re
         <Lightformer form="ring" intensity={2} position={[0, -3, 4]} scale={6} />
       </Environment>
 
-      <MainProduct reducedMotion={reducedMotion} />
-      <LineUp reducedMotion={reducedMotion} />
+      {/* Suspense: `useTexture` (etiquetas, fondos) suspende mientras cargan las texturas. */}
+      <Suspense fallback={null}>
+        <MainProduct reducedMotion={reducedMotion} />
+        <LineUp />
+      </Suspense>
 
       {quality.postprocessing && (
         <EffectComposer multisampling={0}>

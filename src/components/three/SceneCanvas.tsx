@@ -12,7 +12,7 @@ export default function SceneCanvas() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-0" aria-hidden>
+    <div className="pointer-events-none fixed inset-0 z-[1]" aria-hidden>
       <Canvas
         dpr={quality.dpr}
         camera={{ position: [0, 0, 8], fov: 35 }}

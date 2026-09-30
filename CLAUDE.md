@@ -3,23 +3,24 @@
 @AGENTS.md
 
 ## Contexto
-ALTER es una marca de bebidas energéticas cuyo concepto son los **carnavales latinoamericanos**. La web es una landing inmersiva de 6 secciones donde el **envase 3D** es el protagonista: con el scroll se desplaza, se posiciona, se abre y cambia de estado.
+ALTER es una marca de bebidas energéticas cuyo concepto son los **carnavales latinoamericanos**. La web es una landing inmersiva de 5 secciones donde el **envase 3D** es el protagonista: con el scroll se desplaza, se posiciona, se abre y cambia de estado. Guion detallado (copy y comportamiento por sección): `GUION.md`. Brief de marca/producto: `CLAUDE2.md`.
 
-Productos (4 sabores, cada uno = un carnaval; **aún sin definir**, ver `src/config/flavors.ts`):
-- 2 sabores en **lata de aluminio 250 ml** (anilla)
-- 2 sabores en **botella de aluminio 500 ml** (tapa a rosca)
+Productos (4 sabores, cada uno = un personaje de carnaval, ver `src/config/flavors.ts`):
+- **Lucifer** (verde, manzana) y **Supay** (rojo, frutilla) en **lata de aluminio 275 ml** (anilla)
+- **Pujllay** (celeste, arándano) y **Marimonda** (amarillo, limón) en **botella de aluminio 500 ml** (tapa a rosca)
+
+El carnaval de Supay y Lucifer todavía está por confirmar con el cliente (posiblemente ambos "diablada de Oruro"); ver pendientes en `GUION.md`.
 
 Solo hay **2 mallas base** (lata y botella). Los sabores se diferencian por **textura de etiqueta**, no por modelo. Los modelos se hacen en Cinema 4D y se exportan en GLB. **Los materiales del aluminio se definen en código** (`src/components/three/materials.tsx`), no vienen en el GLB.
 
 Idioma del sitio: **español**.
 
 ## Estructura de la landing
-1. **Hero** — logo ALTER + envase girando al centro + invitación a scrollear
-2. **Carnaval 1 (lata)** — entra, gira, se abre la anilla, partículas del carnaval
-3. **Carnaval 2 (lata)** — la etiqueta cambia de sabor con un shader; nueva paleta y partículas
-4. **Carnaval 3 (botella)** — transición lata → botella; la tapa se desenrosca con el scroll
-5. **Carnaval 4 (botella)** — cambio de etiqueta de sabor
-6. **Línea completa** — los 4 envases juntos + dónde comprar + footer con legales
+1. **Hero — "La ronda"** — logo ALTER + los 4 envases en ronda circular que se abre en fila al empezar a scrollear + tagline "Tu mejor versión"
+2. **Manifiesto — "Salen los personajes"** — sección pinneada; cada personaje emerge de su etiqueta con el scroll, 4 líneas de copy
+3. **Personajes — "Uno por pantalla"** — sección pinneada de 4 pasos, orden **Marimonda → Supay → Pujllay → Lucifer**: el envase activo pasa al centro, se abre (anilla o tapa) y muestra su copy
+4. **Carnaval — "Imágenes vivas"** — descanso del 3D; fotos de corsos/comparsas, sin grilla estática
+5. **Cierre — "La comparsa"** — los 4 envases en formación (arco/V) + confetti + CTA + footer con legales
 
 ## Stack (versiones fijadas)
 Next.js 16 (App Router) · React **19.2.x** · TypeScript · Tailwind 4 · three 0.186 · @react-three/fiber 9.7 · drei 10.7 · @react-three/postprocessing 3.1 · gsap 3.15 + @gsap/react · lenis 1.3 · @gltf-transform/cli 4.5.
@@ -50,7 +51,10 @@ Hoy hay **placeholders** con esa misma estructura: `components/three/products/Ca
 ## Dónde van los assets
 - `assets-source/` — fuentes (Cinema 4D, Illustrator, Photoshop, GLB sin optimizar en `assets-source/glb-raw/`). **Excluida de git.**
 - `public/models/` — GLB **optimizados** (`can.glb`, `bottle.glb`)
-- `public/textures/labels/` — etiquetas por sabor (`<id-sabor>.webp`, ver `labelTexture` en `flavors.ts`)
+- `public/textures/` — etiquetas por sabor (`<id-sabor>.png`, ver `labelTexture` en `flavors.ts`; p.ej. `/textures/lucifer.png`). **Pendiente**: no existen archivos todavía.
+- `public/characters/` — personajes recortados con alfa (`<id-sabor>.png`, ver `characterImage` en `flavors.ts`). **Pendiente**: no existen archivos todavía.
+- `public/photos/` — fotos de corsos/comparsas para la sección Carnaval. **Pendiente**: no existen archivos todavía.
+- `public/fonts/` — ShadowHand (display) y DIN 2014 (texto), ver `CLAUDE2.md`. **Pendiente**: no están cableadas en `layout.tsx`/`globals.css`, hoy el sitio usa Geist.
 - `public/hdri/` — mapas de entorno
 
 ### Optimizar modelos
@@ -59,7 +63,7 @@ Hoy hay **placeholders** con esa misma estructura: `components/three/products/Ca
 ## Estructura de carpetas
 ```
 src/app/                       layout, page, globals.css
-src/components/sections/       Hero, Carnival1-4, FullLine, Footer, SectionShell, ScrollChoreography
+src/components/sections/       Hero, Manifiesto, Personajes, PersonajeCopy, Carnaval, Cierre, Footer, SectionShell, ScrollChoreography
 src/components/three/          SceneLoader, SceneCanvas, Scene, materials
 src/components/three/products/ Can, Bottle (comportamiento), *PlaceholderModel, MainProduct, LineUp
 src/components/three/particles/ (vacío: pendiente)
@@ -79,5 +83,6 @@ scripts/optimize-models.mjs
 - Placeholders marcados como tales (textos "por definir", `*PlaceholderModel`).
 
 ## Estado
-Hecho: base del proyecto, 6 secciones maquetadas, Canvas fijo, Lenis+ScrollTrigger validados con placeholders (cada sección cambia la pose/estado del envase), script de optimización.
-Pendiente: modelos GLB reales, definir los 4 carnavales/sabores, texturas de etiqueta, shader de cambio de etiqueta (`src/shaders/`), partículas por carnaval (`three/particles/`), animaciones finales según storyboard, contenido/copy final, "dónde comprar" real, legales, HDRI, deploy en Vercel.
+Hecho: base del proyecto, 5 secciones maquetadas según `GUION.md` (Hero-ronda, Manifiesto, Personajes ×4 pasos, Carnaval, Cierre), 4 personajes/sabores definidos en `flavors.ts`, Canvas fijo, Lenis+ScrollTrigger validados con placeholders, formación fila/ronda/arco en `LineUp.tsx`, script de optimización.
+Pendiente (del guion, a confirmar con el cliente): carnaval de Supay y Lucifer (¿"diablada de Oruro" para los dos?), revisar traits/copy de cada personaje, CTA final de Cierre, dominio definitivo y URLs de los QR, hex exactos de la paleta y nombres de tipografías.
+Pendiente (técnico, sin assets todavía — placeholders marcados en el código): modelos GLB reales, texturas de etiqueta (`public/textures/`), overlay 2D de personajes con PNG con alfa (`public/characters/`), fotos reales de carnaval (`public/photos/`), fuentes ShadowHand/DIN 2014 (`public/fonts/`), confetti/papel picado (`three/particles/`), shader de cambio de etiqueta (`src/shaders/`), parámetro `?alter=X` (pausa de la ronda en el hero), cámara siguiendo mouse/giroscopio en el cierre, "dónde comprar" real, legales, HDRI, deploy en Vercel.

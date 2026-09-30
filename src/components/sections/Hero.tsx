@@ -1,12 +1,14 @@
 import { SectionShell } from "./SectionShell";
 
+// Hero: lata de Lucifer rotando sola. La frase "Tu mejor versión" NO está acá: vive en
+// <BackLayer> (capa detrás del Canvas) para que la lata pase por delante de las letras.
 export function Hero() {
   return (
     <SectionShell id="hero" align="center">
-      <div className="flex h-[calc(100svh-6rem)] flex-col items-center justify-between py-10 md:h-svh md:py-14">
-        <h1 className="text-6xl font-black uppercase tracking-[0.2em] md:text-8xl">ALTER</h1>
-        <p className="animate-pulse text-sm uppercase tracking-[0.3em] text-white/70">Scrolleá para descubrir ↓</p>
-      </div>
+      <h1 className="sr-only">ALTER — Tu mejor versión</h1>
+      <p className="animate-pulse text-xs uppercase tracking-[0.3em] text-white/70 md:translate-y-[38svh]">
+        Scrolleá para descubrir ↓
+      </p>
     </SectionShell>
   );
 }

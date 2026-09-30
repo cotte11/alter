@@ -19,15 +19,18 @@ export type Channels = {
   ry: number;
   rz: number;
   scale: number;
-  spin: number; // velocidad de giro continuo sobre su eje (rad/s)
   // estados del envase
   open: number; // 0 cerrada → 1 anilla abierta (lata)
   unscrew: number; // 0 tapa puesta → 1 tapa desenroscada (botella)
-  labelCan: number; // 0 sabor A → 1 sabor B (latas)
-  labelBottle: number; // 0 sabor A → 1 sabor B (botellas)
+  labelCan: number; // 0 sabor A (Lucifer) → 1 sabor B (Supay)
+  labelBottle: number; // 0 sabor A (Pujllay) → 1 sabor B (Marimonda)
   // qué se muestra
   bottle: number; // 0 lata → 1 botella
-  line: number; // 0 envase único → 1 los 4 envases juntos
+  line: number; // 0 envase único → 1 los 4 envases juntos, de frente (LineUp, cierre)
+  // fondo y overlays
+  bg: number; // índice continuo en BACKGROUND_STOPS (0 negro, 1..4 sabores, 5 cierre)
+  heroText: number; // opacidad de la frase "Tu mejor versión" (capa detrás del envase)
+  composicion: number; // 0..1: en "Composición" el switch lata/botella manda sobre `bottle`
 };
 
 export const BASE_CHANNELS: Channels = {
@@ -38,22 +41,25 @@ export const BASE_CHANNELS: Channels = {
   ry: 0,
   rz: 0,
   scale: 1,
-  spin: 0,
   open: 0,
   unscrew: 0,
   labelCan: 0,
   labelBottle: 0,
   bottle: 0,
   line: 0,
+  bg: 0,
+  heroText: 0,
+  composicion: 0,
 };
 
 export type SectionId =
   | "hero"
-  | "carnaval-1"
-  | "carnaval-2"
-  | "carnaval-3"
-  | "carnaval-4"
-  | "linea";
+  | "sabor-lucifer"
+  | "sabor-supay"
+  | "sabor-pujllay"
+  | "sabor-marimonda"
+  | "composicion"
+  | "familia";
 
 export interface SectionConfig {
   id: SectionId;
@@ -65,47 +71,67 @@ export interface SectionConfig {
   mobile?: { pose?: Partial<Channels>; during?: Partial<Channels> };
 }
 
+/**
+ * Colores de fondo por índice del canal `bg` (se interpolan entre vecinos). Los sabores
+ * usan su `palette.secondary` (ver flavors.ts); el orden debe coincidir con SECTIONS.
+ */
+export const BACKGROUND_STOPS = ["#000000", "#00542a", "#8a060e", "#1c6690", "#a67c00", "#0b0b10"];
+
+const TURN = Math.PI * 2;
+// Cada sabor suma una vuelta completa sobre su eje (siempre múltiplo de 2π: el envase llega de frente).
+// El vaivén de izquierda a derecha NO está acá: lo aplica MainProduct (ver runtime.sway*).
 const MOBILE_PRODUCT = { px: 0, py: 0.9, scale: 0.85 };
+const MOBILE_BOTTLE = { px: 0, py: 0.85, scale: 0.62 };
+
+// Lado del envase: derecha (px +), el texto va a la izquierda, y viceversa.
+const CAN_RIGHT = { px: 1.7, rx: 0.05, rz: -0.06, scale: 1.4 };
+const CAN_LEFT = { px: -1.7, rx: 0.05, rz: 0.06, scale: 1.4 };
+const BOTTLE_RIGHT = { px: 1.7, rx: 0.05, rz: -0.06, scale: 1.3, bottle: 1 };
+const BOTTLE_LEFT = { px: -1.7, rx: 0.05, rz: 0.06, scale: 1.3, bottle: 1 };
 
 export const SECTIONS: SectionConfig[] = [
   {
     id: "hero",
     heightVh: 100,
-    pose: { rx: 0.12, rz: 0.08, scale: 1.3, spin: 0.8 },
-    mobile: { pose: { scale: 1 } },
+    pose: { py: -0.1, rx: 0.1, rz: -0.25, scale: 1.5, bg: 0, heroText: 1 },
+    mobile: { pose: { py: -0.2, scale: 1.2 } },
   },
   {
-    id: "carnaval-1",
-    heightVh: 250,
-    pose: { px: 1.7, py: -0.1, rx: 0.1, ry: -0.6, rz: 0.15, scale: 1.5, spin: 0.35 },
-    during: { open: 1 },
+    id: "sabor-lucifer",
+    heightVh: 150,
+    pose: { ...CAN_RIGHT, ry: TURN, bg: 1 },
     mobile: { pose: MOBILE_PRODUCT },
   },
   {
-    id: "carnaval-2",
-    heightVh: 250,
-    pose: { px: -1.7, rx: 0.1, ry: 0.5, rz: -0.15, scale: 1.5, spin: 0.35, open: 1 },
-    during: { labelCan: 1 },
+    id: "sabor-supay",
+    heightVh: 150,
+    pose: { ...CAN_LEFT, ry: 2 * TURN, labelCan: 1, bg: 2 },
     mobile: { pose: MOBILE_PRODUCT },
   },
   {
-    id: "carnaval-3",
-    heightVh: 300,
-    pose: { px: 1.7, rx: 0.08, ry: -0.5, rz: 0.1, scale: 1.3, spin: 0.3, bottle: 1, labelCan: 1 },
-    during: { unscrew: 1 },
-    mobile: { pose: { ...MOBILE_PRODUCT, scale: 0.75 } },
+    id: "sabor-pujllay",
+    heightVh: 150,
+    pose: { ...BOTTLE_RIGHT, ry: 3 * TURN, labelCan: 1, bg: 3 },
+    mobile: { pose: MOBILE_BOTTLE },
   },
   {
-    id: "carnaval-4",
-    heightVh: 250,
-    pose: { px: -1.7, rx: 0.08, ry: 0.5, rz: -0.1, scale: 1.3, spin: 0.3, bottle: 1, labelCan: 1 },
-    during: { labelBottle: 1 },
-    mobile: { pose: { ...MOBILE_PRODUCT, scale: 0.75 } },
+    id: "sabor-marimonda",
+    heightVh: 150,
+    pose: { ...BOTTLE_LEFT, ry: 4 * TURN, labelCan: 1, labelBottle: 1, bg: 4 },
+    mobile: { pose: MOBILE_BOTTLE },
   },
   {
-    id: "linea",
-    pose: { py: -0.3, scale: 1, bottle: 1, labelCan: 1, labelBottle: 1, line: 1 },
-    mobile: { pose: { py: 1.2 } },
+    // Se queda con el último envase mostrado (Marimonda); el switch de formato lo maneja
+    // `runtime.compFormat` (ver Composicion.tsx) mezclado por el canal `composicion`.
+    id: "composicion",
+    heightVh: 110,
+    pose: { ...BOTTLE_LEFT, ry: 4 * TURN, labelCan: 1, labelBottle: 1, bg: 4, composicion: 1 },
+    mobile: { pose: { ...MOBILE_BOTTLE, py: 1.4, scale: 0.45 } },
+  },
+  {
+    id: "familia",
+    pose: { py: 0, scale: 1, bottle: 1, labelCan: 1, labelBottle: 1, line: 1, bg: 5 },
+    mobile: { pose: { py: 0.8, scale: 0.8 } },
   },
 ];
 

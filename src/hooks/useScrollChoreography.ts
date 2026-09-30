@@ -2,7 +2,7 @@
 
 import { SECTIONS, resolveEnd, resolvePose } from "@/config/poses";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { channels } from "@/lib/scrollState";
+import { channels, runtime } from "@/lib/scrollState";
 
 /**
  * Conecta cada sección HTML (por id) con la pose/estado del envase.
@@ -38,6 +38,19 @@ export function useScrollChoreography() {
             });
             return;
           }
+
+          // Vaivén: activo mientras el envase está asentado en la sección (tramo `during`);
+          // al empezar la entrada de la siguiente se apaga. Cada vez que se asienta arranca de frente.
+          ScrollTrigger.create({
+            trigger: el,
+            start: "top top",
+            // una sección de 1 pantalla (hero) no tiene tramo fijo: start == end y nunca se activaba
+            end: (s.heightVh ?? 0) > 100 ? "bottom bottom" : "top top-=10",
+            onToggle: (self) => {
+              runtime.swayOn = self.isActive;
+              if (self.isActive) runtime.swayT = 0;
+            },
+          });
 
           // Entrada: estado final de la sección anterior → pose de esta sección.
           if (i > 0) {

@@ -1,5 +1,5 @@
-import { useMemo, type Ref } from "react";
-import { LatheGeometry, CylinderGeometry, Vector2, type MeshStandardMaterial } from "three";
+import { useMemo, type ReactNode } from "react";
+import { LatheGeometry, CylinderGeometry, Vector2 } from "three";
 import { AluminiumMaterial } from "../materials";
 
 /**
@@ -9,7 +9,13 @@ import { AluminiumMaterial } from "../materials";
  */
 export const BOTTLE_CAP_Y = 1.16; // base de la tapa
 
-export function BottlePlaceholderModel({ bodyMaterialRef }: { bodyMaterialRef: Ref<MeshStandardMaterial> }) {
+interface Props {
+  bodyMaterial: ReactNode;
+  /** Malla extra, levemente más grande, para el crossfade de etiqueta (ver Bottle.tsx). */
+  bodyOverlayMaterial?: ReactNode;
+}
+
+export function BottlePlaceholderModel({ bodyMaterial, bodyOverlayMaterial }: Props) {
   const { body, cap } = useMemo(() => {
     const profile = [
       [0, -1.3],
@@ -33,8 +39,13 @@ export function BottlePlaceholderModel({ bodyMaterialRef }: { bodyMaterialRef: R
   return (
     <>
       <mesh name="body" geometry={body}>
-        <AluminiumMaterial ref={bodyMaterialRef} />
+        {bodyMaterial}
       </mesh>
+      {bodyOverlayMaterial && (
+        <mesh geometry={body} scale={1.004}>
+          {bodyOverlayMaterial}
+        </mesh>
+      )}
       <mesh name="cap" geometry={cap} position={[0, BOTTLE_CAP_Y, 0]}>
         <AluminiumMaterial roughness={0.22} />
       </mesh>
