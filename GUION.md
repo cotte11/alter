@@ -66,19 +66,19 @@ Los textos entre [corchetes] son pendientes.
 - **Esta noche soy Marimonda.**
 
 ### Supay · rojo · frutilla · lata 275 ml
-- [Carnaval a definir]
+- Diablada Pillareña, Ecuador
 - Rasgos: intensidad, lo prohibido, el lado oscuro que todos tenemos.
 - *El diablo de los Andes. El dueño de lo que pasa bajo tierra y de lo que no te animás a decir.*
 - **Esta noche soy Supay.**
 
 ### Pujllay · celeste · arándano · botella 500 ml
-- Pujllay de Tarabuco, Bolivia
+- Carnaval de Humahuaca, Jujuy, Argentina
 - Rasgos: juego, celebración, energía que no se corta. Pujllay significa "jugar" en quechua.
 - *Pujllay es jugar. Espuelas, sombrero de cuernos y ganas de que la fiesta no termine.*
 - **Esta noche soy Pujllay.**
 
 ### Lucifer · verde · manzana · lata 275 ml
-- [Carnaval a definir]
+- Carnaval de Oruro, Bolivia
 - Rasgos: liderazgo, desafío, el que va adelante.
 - *El que encabeza la diablada. No sigue a nadie: los demás lo siguen a él.*
 - **Esta noche soy Lucifer.**
