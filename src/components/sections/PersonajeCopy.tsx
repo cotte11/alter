@@ -5,11 +5,8 @@ import { FORMAT_TAGLINE } from "@/config/flavors";
 export function PersonajeCopy({ flavor }: { flavor: Flavor }) {
   return (
     <>
-      <p className="text-sm uppercase tracking-[0.3em]" style={{ color: flavor.palette.accent }}>
-        {flavor.traits.join(" · ")}
-      </p>
       <h2
-        className="mt-3 font-display drop-shadow-[0_4px_0_rgba(0,0,0,0.35)] text-6xl uppercase leading-none md:text-8xl"
+        className="font-display drop-shadow-[0_4px_0_rgba(0,0,0,0.35)] text-6xl uppercase leading-none md:text-8xl"
         style={{ color: "#fff" }}
       >
         {flavor.name}
