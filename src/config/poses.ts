@@ -80,8 +80,8 @@ export const BACKGROUND_STOPS = ["#000000", "#00542a", "#8a060e", "#1c6690", "#a
 const TURN = Math.PI * 2;
 // Cada sabor suma una vuelta completa sobre su eje (siempre múltiplo de 2π: el envase llega de frente).
 // El vaivén de izquierda a derecha NO está acá: lo aplica MainProduct (ver runtime.sway*).
-const MOBILE_PRODUCT = { px: 0, py: 0.9, scale: 0.85 };
-const MOBILE_BOTTLE = { px: 0, py: 0.85, scale: 0.62 };
+const MOBILE_PRODUCT = { px: 0, py: 0.8, scale: 1.15 };
+const MOBILE_BOTTLE = { px: 0, py: 0.8, scale: 0.85 };
 
 // Lado del envase: derecha (px +), el texto va a la izquierda, y viceversa.
 const CAN_RIGHT = { px: 1.7, rx: 0.05, rz: -0.06, scale: 1.4 };
