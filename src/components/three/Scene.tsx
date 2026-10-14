@@ -1,11 +1,21 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
+import { markSceneReady } from "@/lib/loadState";
 import { Environment, Lightformer } from "@react-three/drei";
 import { Bloom, EffectComposer, ToneMapping } from "@react-three/postprocessing";
 import type { QualitySettings } from "@/config/quality";
 import { MainProduct } from "./products/MainProduct";
 import { LineUp } from "./products/LineUp";
+
+function SceneReady() {
+  useEffect(() => {
+    // un frame más para que la primera pasada de render ya esté en pantalla
+    const id = requestAnimationFrame(() => markSceneReady());
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return null;
+}
 
 export function Scene({ quality, reducedMotion }: { quality: QualitySettings; reducedMotion: boolean }) {
   return (
@@ -26,6 +36,8 @@ export function Scene({ quality, reducedMotion }: { quality: QualitySettings; re
       <Suspense fallback={null}>
         <MainProduct reducedMotion={reducedMotion} />
         <LineUp />
+        {/* Monta recién cuando todo lo anterior terminó de cargar: apaga la pantalla de carga. */}
+        <SceneReady />
       </Suspense>
 
       {quality.postprocessing && (

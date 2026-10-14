@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { BackLayer } from "@/components/layout/BackLayer";
+import { LoadingScreen } from "@/components/layout/LoadingScreen";
 import { Navbar } from "@/components/layout/Navbar";
 import { SceneLoader } from "@/components/three/SceneLoader";
 import "../globals.css";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} ${shadowHand.variable} antialiased`}>
       <body className="bg-background text-foreground">
         <SmoothScroll>
+          <LoadingScreen />
           <BackLayer />
           <SceneLoader />
           <Navbar />
